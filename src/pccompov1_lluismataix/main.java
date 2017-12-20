@@ -6,6 +6,7 @@
 package pccompov1_lluismataix;
 
 import pccompov1_lluismataix.modules.login.controller.Controller;
+import pccompov1_lluismataix.modules.login.model.Model;
 import pccompov1_lluismataix.modules.login.views.login;
 
 /**
@@ -45,6 +46,7 @@ public class main {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
+                Model.connectDB();
                 new Controller(new login()).start();
             }
         });

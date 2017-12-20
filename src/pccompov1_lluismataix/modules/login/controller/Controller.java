@@ -35,7 +35,6 @@ public class Controller implements ActionListener{
      * @param start 
      */
     public Controller(JFrame start) {
-        Model.connectDB();
         signIn = (login) start;
     }
     

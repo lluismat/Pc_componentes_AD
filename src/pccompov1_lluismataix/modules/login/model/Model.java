@@ -33,7 +33,7 @@ public class Model {
             System.out.println("Conectando con la Base de datos...");
             String jdbcUrl = "jdbc:mysql://localhost:3306/pccompo";
 
-            singleton.conn = DriverManager.getConnection(jdbcUrl, "batoi", "1234");
+            singleton.conn = DriverManager.getConnection(jdbcUrl, "root", "");
             
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException ex) {
             System.err.println(ex.getMessage());
@@ -89,6 +89,7 @@ public class Model {
                         singleton.user.setProvince(rs.getString("provincia"));
                         singleton.user.setMobile(rs.getString("telefono"));
                         singleton.user.setCreditCard(rs.getString("tarjeta"));
+                        
                         
                         //System.out.println(singleton.user.toString());
 

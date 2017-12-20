@@ -18,5 +18,8 @@ public class singleton {
    public static User user;
    public static DefaultTableModel dtm;
    public static int selectedRow;
+   public static int ram;
+   public static String categorias = "general";
+   public static int carritoActivo;
    
 }

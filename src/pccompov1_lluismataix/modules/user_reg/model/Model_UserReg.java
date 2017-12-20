@@ -12,8 +12,6 @@ import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import pccompov1_lluismataix.classes.singleton;
 import pccompov1_lluismataix.modules.user_reg.views.home_RegisterUser;
@@ -25,59 +23,6 @@ import pccompov1_lluismataix.modules.user_reg.views.perfil;
  * @author lluis
  */
 public class Model_UserReg {
-    
-    //funcion para buscar todos los articulos y mostrarlos en la tabla
-    public static void searchProducts(){
-        try {
-            Statement stmt = singleton.conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM articulos");
-            //SELECT a.*,c.nombre FROM articulos a,categorias c,prodcategoria p WHERE a.codigo = p.articulo AND c.categoria_id = p.categoria
-            
-            while(rs.next()){
-                int stock = rs.getInt("stock");
-                String stock2;
-                if(stock>0){
-                    stock2 = "Esta en Stock";
-                }else{
-                    stock2 = "No esta en Stock";
-                }
-                singleton.dtm.addRow(getArrayDeObjectos(rs.getInt("codigo"),rs.getString("nombre"),rs.getString("fabricante"),rs.getFloat("precio"),stock2));     
-            }
-        } catch (SQLException ex) {
-            System.err.println("SQL Error: "+ex);
-        }catch(Exception ex){
-            System.err.println("Error: "+ex);
-        }
-    }
-    
-    //funcion para montar la tabla
-    public static Object[] getArrayDeObjectos(int codigo,String nombre,String fabricante,float precio, String stock) {
-        Object[] v = new Object[6];
-        try {
-            Statement stmt = singleton.conn.createStatement();
-            
-            ResultSet rs = stmt.executeQuery("SELECT c.nombre FROM articulos a,categorias c,prodcategoria p "
-                    + "WHERE a.codigo = p.articulo AND c.categoria_id = p.categoria AND a.codigo = "+codigo);
-
-            v[0] = codigo;
-            v[1] = nombre;
-            v[2] = fabricante;
-            v[3] = precio;
-            v[4] = stock;
-            
-            if(rs.first()){
-                String categories = rs.getString("nombre");
-                while(rs.next()){
-                    categories = categories + ", "+rs.getString("nombre");
-                }
-                v[5] = categories;
-            }
-            
-        } catch (SQLException ex) {
-            Logger.getLogger(Model_UserReg.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return v;
-    }
     
     //funcion para mostrar todos los datos del usuario en el perfil
     public static void perfil_user(){
@@ -321,5 +266,4 @@ public class Model_UserReg {
         }
         return insert;
     }
-    
 }
