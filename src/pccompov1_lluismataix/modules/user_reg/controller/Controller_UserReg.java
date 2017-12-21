@@ -396,7 +396,12 @@ public class Controller_UserReg implements KeyListener,ActionListener{
             case addArtBtn:
                 boolean errorArt = carritoModel.selectArticulo();
                 if(!errorArt){
-                    carritoModel.addArtToCart();
+                    boolean errorFinished = carritoModel.carritoFinished();
+                    if(!errorFinished){
+                        carritoModel.addArtToCart();
+                    }else{
+                        JOptionPane.showMessageDialog(null,"El carrito activo ya esta terminado y se ha hecho el pedido");
+                    }
                 }
                 break;
             case cartBtn:

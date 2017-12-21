@@ -135,6 +135,11 @@ public class carritoModel {
                 }
                 count++;  
             }
+            if(singleton.carritoActivo==null){
+                rs.first();
+                singleton.carritoActivo = new CarritoClass(rs.getInt("cesta_id"),rs.getString("nombre"));
+            }
+            
         } catch (SQLException ex) {
             System.err.println("SQL Error: "+ex);
         }catch(Exception ex){
@@ -199,7 +204,16 @@ public class carritoModel {
     public static void deleteCarrito(){
         try {
             Statement stmt = singleton.conn.createStatement();
-
+            Statement stmt2 = singleton.conn.createStatement();
+            Statement stmt3 = singleton.conn.createStatement();
+            
+            ResultSet rs = stmt2.executeQuery("SELECT * FROM lincesta,articulos WHERE articulo = codigo AND cesta = "+singleton.carritoActivo.getId());
+            
+            while(rs.next()){
+                stmt3.executeUpdate("UPDATE articulos SET stock = (stock+"+rs.getInt("cantidad")+")"
+                +"WHERE codigo = "+rs.getInt("articulo"));
+            }
+            
             stmt.executeUpdate("DELETE FROM cestas WHERE cesta_id = "+singleton.carritoActivo.getId());
             
             createComboCarrito();
@@ -217,33 +231,44 @@ public class carritoModel {
             try {
                 Statement stmt = singleton.conn.createStatement();
                 Statement stmt2 = singleton.conn.createStatement();
+                Statement stmt3 = singleton.conn.createStatement();
+                Statement stmt4 = singleton.conn.createStatement();
+                ResultSet rs1 = stmt4.executeQuery("SELECT * FROM articulos WHERE codigo = "+singleton.articuloSelected.getCod());
+                rs1.first();
                 ResultSet rs = stmt.executeQuery("SELECT * FROM lincesta,articulos WHERE articulo = codigo AND cesta = "+singleton.carritoActivo.getId());
-                if(rs.first()){
+                if(rs1.getInt("stock")>0){
+                    stmt3.executeUpdate("UPDATE articulos SET stock = (stock-1)"
+                              +"WHERE codigo = "+singleton.articuloSelected.getCod());
+                    if(rs.first()){
 
-                    rs.beforeFirst();
-                    int updateifexist=0;
-                    while(rs.next()){
-                        if(rs.getInt("articulo")==singleton.articuloSelected.getCod()){
-                            stmt2.executeUpdate("UPDATE lincesta SET cantidad = "
-                          +(rs.getInt("cantidad")+1)+", importe = "+singleton.articuloSelected.getPrecio()*(rs.getInt("cantidad")+1)
-                          +"WHERE linea = "+rs.getInt("linea"));
-                            updateifexist = 1;
+                        rs.beforeFirst();
+                        int updateifexist=0;
+                        while(rs.next()){
+                            if(rs.getInt("articulo")==singleton.articuloSelected.getCod()){
+                                stmt2.executeUpdate("UPDATE lincesta SET cantidad = "
+                              +(rs.getInt("cantidad")+1)+", importe = "+singleton.articuloSelected.getPrecio()*(rs.getInt("cantidad")+1)
+                              +"WHERE linea = "+rs.getInt("linea"));
+                                updateifexist = 1;
+                            }
                         }
-                    }
-                    if(updateifexist == 0){
-                        rs.last();
-                        stmt2.executeUpdate("INSERT INTO lincesta (linea,cesta,articulo,cantidad,precio,importe) "
-                        + "VALUES ('"+(rs.getRow()+1)+"','"+singleton.carritoActivo.getId()+
-                        "','"+singleton.articuloSelected.getCod()+"',"+1+","+singleton.articuloSelected.getPrecio()+","+singleton.articuloSelected.getPrecio()*1+")");
-                    }
+                        if(updateifexist == 0){
+                            rs.last();
+                            stmt2.executeUpdate("INSERT INTO lincesta (linea,cesta,articulo,cantidad,precio,importe) "
+                            + "VALUES ('"+(rs.getRow()+1)+"','"+singleton.carritoActivo.getId()+
+                            "','"+singleton.articuloSelected.getCod()+"',"+1+","+singleton.articuloSelected.getPrecio()+","+singleton.articuloSelected.getPrecio()*1+")");
+                        }
 
+                    }else{
+                        stmt2.executeUpdate("INSERT INTO lincesta (linea,cesta,articulo,cantidad,precio,importe) "
+                        + "VALUES (1,'"+singleton.carritoActivo.getId()+
+                        "','"+singleton.articuloSelected.getCod()+"',"+1+","
+                        + ""+singleton.articuloSelected.getPrecio()+","+singleton.articuloSelected.getPrecio()*1+")");
+                    }
+                    JOptionPane.showMessageDialog(null, "El articulo se ha añadido a tu carrito activo "+singleton.carritoActivo.getNombre());
                 }else{
-                    stmt2.executeUpdate("INSERT INTO lincesta (linea,cesta,articulo,cantidad,precio,importe) "
-                    + "VALUES (1,'"+singleton.carritoActivo.getId()+
-                    "','"+singleton.articuloSelected.getCod()+"',"+1+","
-                    + ""+singleton.articuloSelected.getPrecio()+","+singleton.articuloSelected.getPrecio()*1+")");
+                    JOptionPane.showMessageDialog(null, "Este articulo no se puede añadirse a tu cesta porque ya no queda stock");
                 }
-                JOptionPane.showMessageDialog(null, "El articulo se ha añadido a tu carrito activo "+singleton.carritoActivo.getNombre());
+                
             } catch (SQLException ex) {
                 System.err.println("Error: "+ex.getMessage());
             }
@@ -289,11 +314,18 @@ public class carritoModel {
         try {
             Statement stmt = singleton.conn.createStatement();
             Statement stmt2 = singleton.conn.createStatement();
-
-            stmt.executeUpdate("DELETE FROM lincesta WHERE linea = "+singleton.selectedRow+" AND cesta = "+singleton.carritoActivo.getId());
-
+            Statement stmt3 = singleton.conn.createStatement();
+            Statement stmt4 = singleton.conn.createStatement();
             
-            ResultSet rs1 = stmt2.executeQuery("SELECT * FROM lincesta WHERE cesta = "+singleton.carritoActivo.getId());
+            ResultSet rs = stmt.executeQuery("SELECT * FROM lincesta WHERE cesta = "+singleton.carritoActivo.getId()+" AND linea = "+singleton.selectedRow);
+            
+            rs.first();
+            stmt4.executeUpdate("UPDATE articulos SET stock = (stock+"+rs.getInt("cantidad")+")"
+                          +"WHERE codigo = "+rs.getInt("articulo"));
+            
+            stmt2.executeUpdate("DELETE FROM lincesta WHERE linea = "+singleton.selectedRow+" AND cesta = "+singleton.carritoActivo.getId());
+
+            ResultSet rs1 = stmt3.executeQuery("SELECT * FROM lincesta WHERE cesta = "+singleton.carritoActivo.getId());
 
             while(rs1.next()){
                 if(rs1.getInt("linea")>singleton.selectedRow){
@@ -314,14 +346,35 @@ public class carritoModel {
     public static void changeLinea(){
         try {
             if(carritoView.panelCantidad.isVisible()){
-                if(!carritoView.cantidadField.getText().equals("")){
-                    ResultSet rs = null;
-                    singleton.dtm = new DefaultTableModel();
+                if(!carritoView.cantidadField.getText().equals("") && singleton.carritoActivo !=null){
                     Statement stmt = singleton.conn.createStatement();
+                    Statement stmt2 = singleton.conn.createStatement();
+                    Statement stmt3 = singleton.conn.createStatement();
+                    Statement stmt4 = singleton.conn.createStatement();
                     int cantidad = Integer.parseInt(carritoView.cantidadField.getText());
-                    stmt.executeUpdate("UPDATE lincesta SET cantidad = '"+cantidad+"',importe = (precio *"+cantidad+")"
-                            + "WHERE linea = "+singleton.selectedRow+" AND cesta = "+singleton.carritoActivo.getId());
-
+                    
+                    ResultSet rs = stmt2.executeQuery("SELECT * FROM lincesta WHERE linea = "+singleton.selectedRow+" AND cesta = "+singleton.carritoActivo.getId());
+                    rs.first();
+                    ResultSet rs1 = stmt4.executeQuery("SELECT * FROM articulos WHERE codigo = "+rs.getInt("articulo"));
+                    rs1.first();
+                    int stock2 = rs1.getInt("stock")+rs.getInt("cantidad");
+                    if((stock2-cantidad)<0){
+                        JOptionPane.showMessageDialog(null, "No se puede añadir esa cantidad porque supera el stock que tiene actualmente este articulo");
+                    }else{
+                        stmt.executeUpdate("UPDATE lincesta SET cantidad = '"+cantidad+"',importe = (precio *"+cantidad+")"
+                        + "WHERE linea = "+singleton.selectedRow+" AND cesta = "+singleton.carritoActivo.getId());
+                    
+                        int stock=0;
+                        if(rs.getInt("cantidad")>cantidad){
+                            stock = rs.getInt("cantidad")-cantidad;
+                            stmt3.executeUpdate("UPDATE articulos SET stock = (stock+"+stock+")"
+                              +"WHERE codigo = "+rs.getInt("articulo"));
+                        }else if(rs.getInt("cantidad")<cantidad){
+                            stock = cantidad-rs.getInt("cantidad");
+                            stmt3.executeUpdate("UPDATE articulos SET stock = (stock-"+stock+")"
+                              +"WHERE codigo = "+rs.getInt("articulo"));
+                        } 
+                    }
                     carritoView.comboCarritos.setSelectedItem(singleton.carritoActivo);
                     carritoView.panelCantidad.setVisible(false);
                     seeCarts(singleton.carritoActivo);
@@ -406,7 +459,8 @@ public class carritoModel {
         }
     }
     
-    public static void carritoFinished(){
+    public static boolean carritoFinished(){
+        boolean finished=false;
         try {
             ResultSet rs;
             Statement stmt = singleton.conn.createStatement();
@@ -420,6 +474,7 @@ public class carritoModel {
             }
             
             if(rs.first()){
+                finished = true;
                 carritoView.changeCarrito.setEnabled(false);
                 carritoView.deleteCartBtn.setEnabled(false);
                 carritoView.deleteLineaBtn.setEnabled(false);
@@ -438,6 +493,7 @@ public class carritoModel {
         }catch(Exception ex){
             System.err.println("Error: "+ex);
         }
+        return finished;
     }
     
     public static Object[] getArrayDeObjectosPedidos(int pedido,int cesta, String fecha,String divisa,String fpago,String fenvio,float subtotal,float iva,float total) {
