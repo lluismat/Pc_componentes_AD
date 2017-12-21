@@ -20,6 +20,7 @@ public class singleton {
    public static int selectedRow;
    public static int ram;
    public static String categorias = "general";
-   public static int carritoActivo;
+   public static CarritoClass carritoActivo;
+   public static Articulo articuloSelected; 
    
 }

@@ -46,6 +46,9 @@ public class carritoView extends javax.swing.JFrame {
         etiNombreCarrito = new javax.swing.JLabel();
         btnCancelAddCart = new javax.swing.JButton();
         changeCarrito = new javax.swing.JButton();
+        panelCantidad = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        cantidadField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -129,6 +132,27 @@ public class carritoView extends javax.swing.JFrame {
 
         changeCarrito.setText("Modificar Cesta");
 
+        jLabel1.setText("Nueva Cantidad:");
+
+        javax.swing.GroupLayout panelCantidadLayout = new javax.swing.GroupLayout(panelCantidad);
+        panelCantidad.setLayout(panelCantidadLayout);
+        panelCantidadLayout.setHorizontalGroup(
+            panelCantidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelCantidadLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelCantidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addComponent(cantidadField, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(38, Short.MAX_VALUE))
+        );
+        panelCantidadLayout.setVerticalGroup(
+            panelCantidadLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelCantidadLayout.createSequentialGroup()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                .addComponent(cantidadField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -151,6 +175,10 @@ public class carritoView extends javax.swing.JFrame {
                         .addGap(18, 63, Short.MAX_VALUE)
                         .addComponent(purchaseBtn))
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(panelCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
                         .addComponent(editLineaBtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(deleteLineaBtn)
@@ -176,10 +204,13 @@ public class carritoView extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(panelCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(deleteLineaBtn, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
-                    .addComponent(AtrasCarritoBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(editLineaBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(editLineaBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(AtrasCarritoBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(deleteLineaBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -190,6 +221,7 @@ public class carritoView extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static javax.swing.JButton AtrasCarritoBtn;
     public static javax.swing.JButton btnCancelAddCart;
+    public static javax.swing.JTextField cantidadField;
     public static javax.swing.JTable carritoTable;
     public static javax.swing.JButton changeCarrito;
     public static javax.swing.JComboBox<String> comboCarritos;
@@ -201,8 +233,10 @@ public class carritoView extends javax.swing.JFrame {
     public static javax.swing.JLabel etiNombreCarrito;
     public static javax.swing.JLabel etiTipo;
     public static javax.swing.ButtonGroup grupo;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     public static javax.swing.JTextField nameCarritoField;
+    public static javax.swing.JPanel panelCantidad;
     public static javax.swing.JPanel panelCarrito;
     public static javax.swing.JRadioButton privateRB;
     private javax.swing.JRadioButton publicRB;

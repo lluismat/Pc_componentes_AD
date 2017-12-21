@@ -15,6 +15,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import pccompov1_lluismataix.classes.CarritoClass;
 import pccompov1_lluismataix.classes.singleton;
 import pccompov1_lluismataix.modules.login.controller.Controller;
 import pccompov1_lluismataix.modules.login.views.login;
@@ -22,9 +23,11 @@ import pccompov1_lluismataix.modules.user_reg.model.Filtro;
 import pccompov1_lluismataix.modules.user_reg.model.Model_UserReg;
 import pccompov1_lluismataix.modules.user_reg.model.carritoModel;
 import pccompov1_lluismataix.modules.user_reg.views.carritoView;
+import pccompov1_lluismataix.modules.user_reg.views.newPedido;
 import pccompov1_lluismataix.modules.user_reg.views.home_RegisterUser;
 import pccompov1_lluismataix.modules.user_reg.views.newOpinion;
 import pccompov1_lluismataix.modules.user_reg.views.opinions;
+import pccompov1_lluismataix.modules.user_reg.views.pedidosView;
 import pccompov1_lluismataix.modules.user_reg.views.perfil;
 
 /**
@@ -38,6 +41,8 @@ public class Controller_UserReg implements KeyListener,ActionListener{
     public static opinions opinions;
     public static newOpinion newOpinion;
     public static carritoView carrito;
+    public static newPedido addPedido;
+    public static pedidosView seePedidos;
     /**
      * Constructor del controlador del Sign In
      * @param start 
@@ -60,6 +65,12 @@ public class Controller_UserReg implements KeyListener,ActionListener{
             case 4:
                 carrito = (carritoView) start;
                 break;
+            case 5:
+                addPedido = (newPedido) start;
+                break;
+            case 6:
+                seePedidos = (pedidosView) start;
+                break;
         }
     }
     
@@ -80,6 +91,8 @@ public class Controller_UserReg implements KeyListener,ActionListener{
         btnSearchAll,
         cartBtn,
         addArtBtn,
+        cestaActCombo,
+        pedidosBtn,
         //options RAM
         ramType1,
         ramType2,
@@ -110,6 +123,14 @@ public class Controller_UserReg implements KeyListener,ActionListener{
         deleteCartBtn,
         editLineaBtn,
         purchaseBtn,
+        btnCancelAddCart,
+        cantidadField,
+        //botones crear pedido
+        createPedido,
+        cancelAddPedido,
+        //botones ver pedidos
+        cancelPedido,
+        backPedidosBtn,
     }
     
     public void start(int o) {
@@ -134,6 +155,8 @@ public class Controller_UserReg implements KeyListener,ActionListener{
                 this.menuUserreg.seeOpinionsBtn.addActionListener(this);
                 this.menuUserreg.logoutBtn.setActionCommand("logoutBtn");
                 this.menuUserreg.logoutBtn.addActionListener(this);
+                this.menuUserreg.pedidosBtn.setActionCommand("pedidosBtn");
+                this.menuUserreg.pedidosBtn.addActionListener(this);
                 //filtro
                 this.menuUserreg.filterField.setActionCommand("filterField");
                 this.menuUserreg.filterField.addActionListener(this);
@@ -162,6 +185,7 @@ public class Controller_UserReg implements KeyListener,ActionListener{
                 this.menuUserreg.cartBtn.addActionListener(this);
                 this.menuUserreg.addArtBtn.setActionCommand("addArtBtn");
                 this.menuUserreg.addArtBtn.addActionListener(this);
+                
                 //OPTIONS RAM
                 this.menuUserreg.ramType1.setActionCommand("ramType1");
                 this.menuUserreg.ramType1.addActionListener(this);
@@ -268,6 +292,7 @@ public class Controller_UserReg implements KeyListener,ActionListener{
                 carrito.setVisible(true);
                 
                 carritoModel.comprobaIfCarritoExist();
+                carritoModel.carritoFinished();
                 
                 this.carrito.addWindowListener(new WindowAdapter() {
                     @Override
@@ -279,10 +304,70 @@ public class Controller_UserReg implements KeyListener,ActionListener{
                 
                 this.carrito.createCarrito.setActionCommand("createCarrito");
                 this.carrito.createCarrito.addActionListener(this);
+                this.carrito.deleteCartBtn.setActionCommand("deleteCartBtn");
+                this.carrito.deleteCartBtn.addActionListener(this);
+                this.carrito.btnCancelAddCart.setActionCommand("btnCancelAddCart");
+                this.carrito.btnCancelAddCart.addActionListener(this);
+                this.carrito.deleteLineaBtn.setActionCommand("deleteLineaBtn");
+                this.carrito.deleteLineaBtn.addActionListener(this);
+                this.carrito.editLineaBtn.setActionCommand("editLineaBtn");
+                this.carrito.editLineaBtn.addActionListener(this);
+                this.carrito.comboCarritos.setActionCommand("comboCarritos");
+                this.carrito.comboCarritos.addActionListener(this);
+                this.carrito.purchaseBtn.setActionCommand("purchaseBtn");
+                this.carrito.purchaseBtn.addActionListener(this);
+                this.carrito.changeCarrito.setActionCommand("changeCarrito");
+                this.carrito.changeCarrito.addActionListener(this);
                 this.carrito.AtrasCarritoBtn.setActionCommand("AtrasCarritoBtn");
                 this.carrito.AtrasCarritoBtn.addActionListener(this);
+                this.carrito.cantidadField.setActionCommand("cantidadField");
+                this.carrito.cantidadField.addActionListener(this);
+                break;
+            case 5:
+                addPedido.setSize(800, 300);//ancho x alto
+                addPedido.setResizable(false);
+                addPedido.setVisible(true);
+                
+                this.addPedido.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosing(WindowEvent e) {
+                        JOptionPane.showMessageDialog(null,"Saliendo de la Aplicación");
+                        System.exit(0);
+                    }
+                });
+                
+                DefaultComboBoxModel model2 = new DefaultComboBoxModel(new String[]{"Transferencia", "Tarjeta", "PayPal", "Reembolso"});
+                newPedido.comboPago.setModel(model2);
+                
+                carritoModel.printPedidoData();
+                
+                this.addPedido.createPedido.setActionCommand("createPedido");
+                this.addPedido.createPedido.addActionListener(this);
+                this.addPedido.cancelAddPedido.setActionCommand("cancelAddPedido");
+                this.addPedido.cancelAddPedido.addActionListener(this);
                 
                 break;
+            case 6:
+                seePedidos.setSize(1000, 400);//ancho x alto
+                seePedidos.setResizable(false);
+                seePedidos.setVisible(true);
+                
+                this.seePedidos.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosing(WindowEvent e) {
+                        JOptionPane.showMessageDialog(null,"Saliendo de la Aplicación");
+                        System.exit(0);
+                    }
+                });
+                
+                carritoModel.seePedidos();
+                
+                this.seePedidos.cancelPedido.setActionCommand("cancelPedido");
+                this.seePedidos.cancelPedido.addActionListener(this);
+                this.seePedidos.backPedidosBtn.setActionCommand("backPedidosBtn");
+                this.seePedidos.backPedidosBtn.addActionListener(this);
+                break;
+
         }
         
     }
@@ -309,29 +394,79 @@ public class Controller_UserReg implements KeyListener,ActionListener{
                 }
                 break;
             case addArtBtn:
-                
+                boolean errorArt = carritoModel.selectArticulo();
+                if(!errorArt){
+                    carritoModel.addArtToCart();
+                }
                 break;
             case cartBtn:
                 menuUserreg.dispose();
                 new Controller_UserReg(new carritoView(),4).start(4); 
                 break;
-            //ACCIONES CARRITO  
+            case pedidosBtn:
+                menuUserreg.dispose();
+                new Controller_UserReg(new pedidosView(),6).start(6); 
+                break;
             case createCarrito:
                 carritoModel.createCarrito();
                 break;
             case deleteCartBtn:
+                carritoModel.deleteCarrito();
                 break;
             case deleteLineaBtn:
+                boolean errorLinea=carritoModel.selectLinea();
+                if(!errorLinea){
+                    carritoModel.deleteLinea();
+                }
                 break;
             case changeCarrito:
+                carritoModel.changeCarrito();
                 break;
             case editLineaBtn:
+                boolean errorLinea2=carritoModel.selectLinea();
+                if(!errorLinea2){
+                    carritoModel.changeLinea();
+                }
                 break;
             case purchaseBtn:
+                carrito.dispose();
+                new Controller_UserReg(new newPedido(),5).start(5);
                 break;
             case comboCarritos:
+                singleton.carritoActivo = (CarritoClass) carritoView.comboCarritos.getSelectedItem();
+                carritoModel.seeCarts(singleton.carritoActivo);
+                carritoModel.carritoFinished();
                 break;
             case AtrasCarritoBtn:
+                carrito.dispose();
+                new Controller_UserReg(new home_RegisterUser(),0).start(0);
+                break;
+            case btnCancelAddCart:
+                carritoView.panelCarrito.setVisible(false);
+                carritoView.nameCarritoField.setText("");
+                break;
+            //CREAR PEDIDO
+            case createPedido:
+                carritoModel.createPedido();
+                addPedido.dispose();
+                new Controller_UserReg(new home_RegisterUser(),0).start(0);
+                break;
+            case cancelAddPedido:
+                addPedido.dispose();
+                new Controller_UserReg(new carritoView(),4).start(4);
+                break;
+            //VER PEDIDOS
+            case cancelPedido:
+                boolean errorPedido=carritoModel.selectPedido();
+                if(!errorPedido){
+                    carritoModel.deletePedido();
+                    seePedidos.dispose();
+                new Controller_UserReg(new pedidosView(),6).start(6);
+                }
+                break;
+            case backPedidosBtn:
+                seePedidos.dispose();
+                new Controller_UserReg(new home_RegisterUser(),0).start(0);
                 break;
             //FILTRO
             case btnSearchAll:

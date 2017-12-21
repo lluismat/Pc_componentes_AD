@@ -12,7 +12,9 @@ import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
+import pccompov1_lluismataix.classes.CarritoClass;
 import pccompov1_lluismataix.classes.singleton;
 import pccompov1_lluismataix.modules.user_reg.views.home_RegisterUser;
 import pccompov1_lluismataix.modules.user_reg.views.newOpinion;
@@ -266,4 +268,33 @@ public class Model_UserReg {
         }
         return insert;
     }
+    
+//        public static void createComboCarritoHome(){
+//        
+//        try {
+//            DefaultComboBoxModel model = new DefaultComboBoxModel();
+//            Statement stmt = singleton.conn.createStatement();
+//            ResultSet rs = stmt.executeQuery("SELECT * FROM cestas WHERE usuario_id = "+singleton.user.getId());
+//            
+//            //lleno el combobox con los nombres del carrito
+//            
+//            home_RegisterUser.cestaActCombo.setModel(model);
+//            int count=0;
+//            while(rs.next()){
+//                model.addElement(new CarritoClass(rs.getInt("cesta_id"),rs.getString("nombre")));
+//                if(singleton.carritoActivo!=null){
+//                    if(rs.getInt("cesta_id")==singleton.carritoActivo.getId()){
+//                        //home_RegisterUser.cestaActCombo.setSelectedIndex(count);
+//                    }
+//                }
+//                count++;
+//            }
+//            
+//        } catch (SQLException ex) {
+//            System.err.println("SQL Error: "+ex);
+//        }catch(Exception ex){
+//            System.err.println("Error: "+ex);
+//        }
+//    }
+    
 }
